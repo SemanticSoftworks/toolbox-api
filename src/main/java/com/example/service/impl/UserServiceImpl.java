@@ -1,16 +1,19 @@
 package com.example.service.impl;
 
-import com.example.domain.Role;
-import com.example.domain.User;
-import com.example.domain.UserRole;
-import com.example.repositories.RoleRepository;
-import com.example.repositories.UserRepository;
-import com.example.repositories.UserRoleRepository;
+import com.example.model.UserAuthenticationDTO;
+import com.example.model.UserDTO;
+import com.example.model.UserRegistrationDTO;
+import com.example.model.UserUpdateDTO;
 import com.example.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by dani on 2017-02-06.
@@ -19,61 +22,71 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private UserRoleRepository userRoleRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
-    public User findByUserNameAndPassword(String username, String password) {
-        User tmpUser = userRepository.findByUsername(username);
+    public UserDTO getUser(Long id) {
+        String url = "http://localhost:8091/user/{id}";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("id", id.toString());
 
-        if(tmpUser != null){
-            boolean correctPassword = BCrypt.checkpw(password, tmpUser.getPassword()); // om skickad hashad lösenord = databasens
-            if(correctPassword){
-                return tmpUser;
-            }
-        }
-        return null;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url, UserDTO.class, params);
     }
 
     @Override
-    public User findUserById(Long id) {
-        return userRepository.findById(id);
+    public UserDTO login(UserAuthenticationDTO userAuthenticationDTO) {
+        UserDTO userDTO = null;
+
+        try {
+            String url = "http://localhost:8091/user/login";
+            RestTemplate restTemplate = new RestTemplate();
+
+            userDTO = (restTemplate.postForObject(url, userAuthenticationDTO, UserDTO.class));
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request login!"); return null; }
+
+        return userDTO;
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserDTO register(UserRegistrationDTO userRegistrationDTO) {
+        UserDTO userDTO = null;
+
+        try {
+            String url = "http://localhost:8091/user/register";
+            RestTemplate restTemplate = new RestTemplate();
+
+            userDTO = (restTemplate.postForObject(url, userRegistrationDTO, UserDTO.class));
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request register!"); return null; }
+
+        return userDTO;
     }
 
     @Override
-    public User addUser(User newUser) {
-        User savedUser = null;
+    public UserDTO update(UserRegistrationDTO userRegistrationDTO) {
+        UserDTO userDTO = null;
 
-        User userCheck = userRepository.findByUsername(newUser.getUsername());
-        if(userCheck == null)
-            savedUser = userRepository.save(newUser);
+        try {
+            String url = "http://localhost:8091/user/update";
+            RestTemplate restTemplate = new RestTemplate();
 
-        return savedUser;
+            userDTO = (restTemplate.postForObject(url, userRegistrationDTO, UserDTO.class));
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request update!"); return null; }
+
+        return userDTO;
     }
 
     @Override
-    public Role getRole(String role) { return roleRepository.findByRole(role); }
+    public UserUpdateDTO changePassword(String username, String email, String newPassword) {
+        UserUpdateDTO userUpdateDTO=null;
 
-    @Override
-    public UserRole addUserRole(UserRole newUserRole) { return userRoleRepository.save(newUserRole); }
+        try {
+            String url = "http://localhost:8091/user/forgotpassword?"+"username="+username+"&"+"email="+email+"&"+"newPassword="+newPassword;
 
-    @Override
-    public User updateUser(User user) {
-        
-        if(user != null){
-            return userRepository.save(user);
-        }
-        return null;
+            RestTemplate restTemplate = new RestTemplate();
+            userUpdateDTO = restTemplate.postForObject(url, new UserUpdateDTO() ,UserUpdateDTO.class);
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request change password!"); return null; }
+
+        return userUpdateDTO;
     }
 }
