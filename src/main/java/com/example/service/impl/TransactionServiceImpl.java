@@ -28,7 +28,7 @@ public class TransactionServiceImpl implements TransactionService{
         TransactionListingDTO transactionListingDTO;
 
         try {
-            String url = "http://localhost:8092/transaction/{id}?startPosition="+startPosition+"&endPosition="+endPosition+"&username="+username+"&password="+password;
+            String url = "http://localhost:8092/transaction/list/{id}?startPosition="+startPosition+"&endPosition="+endPosition+"&username="+username+"&password="+password;
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", userId.toString());
 

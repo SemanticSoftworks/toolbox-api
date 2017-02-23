@@ -44,7 +44,7 @@ public class TransactionController {
         return new ResponseEntity<>(new TransactionDTO(), HttpStatus.BAD_REQUEST);
     }
 
-    // not woorking yet --> cant recieve list..!
+
     @RequestMapping(value = "/list/{userid}", method = RequestMethod.GET)
     public ResponseEntity<TransactionListingDTO> getTransactions(@PathVariable Long userid , @RequestParam Long startPosition, @RequestParam Long endPosition, @RequestParam String username, @RequestParam String password) {
         TransactionListingDTO transactionListingDTO;
