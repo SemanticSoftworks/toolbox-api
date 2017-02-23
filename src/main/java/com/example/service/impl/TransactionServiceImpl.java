@@ -35,7 +35,7 @@ public class TransactionServiceImpl implements TransactionService{
             RestTemplate restTemplate = new RestTemplate();
            transactionListingDTO = restTemplate.getForObject(url, TransactionListingDTO.class, params);
         }catch(HttpClientErrorException e ){ logger.info("CATCH bad request getTransaction!"); return null; }
-        logger.info("THIS WORKS?");
+
         return transactionListingDTO;
     }
 
@@ -51,7 +51,6 @@ public class TransactionServiceImpl implements TransactionService{
             RestTemplate restTemplate = new RestTemplate();
             transactionDTO = restTemplate.getForObject(url, TransactionDTO.class, params);
         }catch(HttpClientErrorException e ){ logger.info("CATCH bad request getTransaction!"); return null; }
-        catch (Exception e){logger.info("connection error getTransaction"); return null;}
 
         return transactionDTO;
     }
@@ -66,8 +65,38 @@ public class TransactionServiceImpl implements TransactionService{
 
             transactionDTO = (restTemplate.postForObject(url, transactionIdentifierDTO, TransactionDTO.class));
         } catch(HttpClientErrorException e ){ logger.info("CATCH bad request addTransaction!"); return null; }
-        catch (Exception e){logger.info("connection error addTransaction"); return null;}
 
         return transactionDTO;
     }
+
+    @Override
+    public TransactionDTO updateTransaction(TransactionIdentifierDTO transactionIdentifierDTO) {
+
+        try {
+            String url = "http://localhost:8092/transaction/admin/update";
+            Map<String, String> params = new HashMap<String, String>();
+            RestTemplate restTemplate = new RestTemplate();
+
+            restTemplate.put(url,transactionIdentifierDTO,params);
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request updateTransaction!"); return null; }
+
+        return new TransactionDTO();
+    }
+
+    @Override
+    public TransactionDTO deleteTransactionById(Long id, String username, String password) {
+
+        try {
+            String url = "http://localhost:8092/transaction/admin/{id}?username=" + username + "&password=" + password;
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("id", id.toString());
+
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.delete(url, params);
+        }catch(HttpClientErrorException e ){ logger.info("CATCH bad request deleteTransaction!"); return null; }
+
+        return new TransactionDTO();
+    }
+
 }

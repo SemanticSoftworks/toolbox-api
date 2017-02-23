@@ -12,4 +12,6 @@ public interface TransactionService {
     TransactionListingDTO getTransactions(Long userId, Long startPosition, Long endPosition, String username, String password);
     TransactionDTO getTransaction(Long transactionId, String username, String password);
     TransactionDTO addTransaction(TransactionIdentifierDTO transactionIdentifierDTO);
+    TransactionDTO updateTransaction(TransactionIdentifierDTO transactionIdentifierDTO);
+    TransactionDTO deleteTransactionById(Long id, String username, String password);
 }

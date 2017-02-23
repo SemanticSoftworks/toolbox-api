@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TransactionIdentifierDTO {
 
     private Long userId;
+    private Long transactionId;
     private String username;
     private String password;
     private String date;
@@ -16,7 +17,8 @@ public class TransactionIdentifierDTO {
     private int sum;
 
     @JsonCreator
-    public TransactionIdentifierDTO(@JsonProperty("userId") Long userId,@JsonProperty("date") String date, @JsonProperty("description") String description, @JsonProperty("sum") int sum, @JsonProperty("username") String username, @JsonProperty("password") String password) {
+    public TransactionIdentifierDTO(@JsonProperty("transactionId") Long transactionId,@JsonProperty("userId") Long userId,@JsonProperty("date") String date, @JsonProperty("description") String description, @JsonProperty("sum") int sum, @JsonProperty("username") String username, @JsonProperty("password") String password) {
+        this.transactionId = transactionId;
         this.userId = userId;
         this.date = date;
         this.description = description;
@@ -24,6 +26,10 @@ public class TransactionIdentifierDTO {
         this.username = username;
         this.password = password;
     }
+
+    public Long getTransactionId() { return transactionId; }
+
+    public void setTransactionId(Long transactionId) { this.transactionId = transactionId; }
 
     public Long getUserId() { return userId; }
 
@@ -67,4 +73,5 @@ public class TransactionIdentifierDTO {
         this.sum = sum;
     }
 }
+
 
