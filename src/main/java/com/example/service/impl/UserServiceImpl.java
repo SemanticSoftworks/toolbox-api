@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService {
 
             userDTO = (restTemplate.postForObject(url, userAuthenticationDTO, UserDTO.class));
         } catch(HttpClientErrorException e ){ logger.info("CATCH bad request login!"); return null; }
+        catch (Exception e){logger.info("connection error login"); return null;}
 
         return userDTO;
     }
@@ -58,6 +59,7 @@ public class UserServiceImpl implements UserService {
 
             userDTO = (restTemplate.postForObject(url, userRegistrationDTO, UserDTO.class));
         } catch(HttpClientErrorException e ){ logger.info("CATCH bad request register!"); return null; }
+        catch (Exception e){logger.info("connection error register"); return null;}
 
         return userDTO;
     }
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService {
 
             userDTO = (restTemplate.postForObject(url, userRegistrationDTO, UserDTO.class));
         } catch(HttpClientErrorException e ){ logger.info("CATCH bad request update!"); return null; }
+        catch (Exception e){logger.info("connection error update"); return null;}
 
         return userDTO;
     }

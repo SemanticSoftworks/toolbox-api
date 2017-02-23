@@ -3,7 +3,7 @@ package com.example.model;
 import java.util.List;
 
 /**
- * Created by dani on 2017-02-09.
+ * Created by dani on 2017-02-23.
  */
 public class TransactionListingDTO {
 
