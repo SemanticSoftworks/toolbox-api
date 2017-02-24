@@ -29,6 +29,4 @@ public class PhotoDTO {
     public long getAdId() {
         return adId;
     }
-
-
 }
