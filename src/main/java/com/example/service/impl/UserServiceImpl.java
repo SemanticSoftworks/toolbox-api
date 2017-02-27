@@ -164,4 +164,46 @@ public class UserServiceImpl implements UserService {
 
         return adminUserDTO;
     }
+
+    @Override
+    public RoleListingDTO getRoles() {
+
+        RoleListingDTO roleListingDTO;
+
+        try {
+            String url = "http://localhost:8091/user/admin/role";
+            Map<String, String> params = new HashMap<String, String>();
+
+            RestTemplate restTemplate = new RestTemplate();
+            roleListingDTO = restTemplate.getForObject(url, RoleListingDTO.class, params);
+        }catch(HttpClientErrorException e ){ logger.info("CATCH bad request getAdminU SERS!"); return null; }
+         return roleListingDTO;
+    }
+
+    @Override
+    public RoleDTO addRole(String role) {
+        RoleDTO roleDTO;
+
+        try {
+            String url = "http://localhost:8091/user/admin/role?role="+role;
+
+            RestTemplate restTemplate = new RestTemplate();
+            roleDTO = restTemplate.postForObject(url, new RoleDTO(),RoleDTO.class);
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request change password!"); return null; }
+
+        return roleDTO;
+    }
+
+    @Override
+    public RoleDTO updateRole(RoleDTO incomingRole) {
+        try {
+            String url = "http://localhost:8091/user/admin/role";
+            Map<String, String> params = new HashMap<String, String>();
+            RestTemplate restTemplate = new RestTemplate();
+
+            restTemplate.put(url,incomingRole,params);
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request updateTransaction!"); return null; }
+
+        return incomingRole;
+    }
 }

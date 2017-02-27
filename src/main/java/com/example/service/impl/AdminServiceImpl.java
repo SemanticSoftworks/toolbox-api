@@ -1,9 +1,6 @@
 package com.example.service.impl;
 
-import com.example.model.AdminUserAdderDTO;
-import com.example.model.AdminUserDTO;
-import com.example.model.AdminUserListingDTO;
-import com.example.model.TransactionDTO;
+import com.example.model.*;
 import com.example.service.AdminService;
 import com.example.service.TransactionService;
 import com.example.service.UserService;
@@ -39,4 +36,13 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public AdminUserDTO updateUser(AdminUserDTO incomingUser) { return userService.adminUpdateUser(incomingUser); }
+
+    @Override
+    public RoleListingDTO getRoles() { return userService.getRoles(); }
+
+    @Override
+    public RoleDTO addRole(String role) { return userService.addRole(role); }
+
+    @Override
+    public RoleDTO updateRole(RoleDTO incomingRole) { return userService.updateRole(incomingRole); }
 }

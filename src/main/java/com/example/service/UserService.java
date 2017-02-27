@@ -19,4 +19,7 @@ public interface UserService {
     AdminUserDTO registerAdminUser(AdminUserAdderDTO incomingUser);
     AdminUserDTO adminAccountActivation(Long id, boolean enable);
     AdminUserDTO adminUpdateUser(AdminUserDTO incomingUser);
+    RoleListingDTO getRoles();
+    RoleDTO addRole(String role);
+    RoleDTO updateRole(RoleDTO incomingRole);
 }

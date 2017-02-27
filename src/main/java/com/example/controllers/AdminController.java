@@ -1,9 +1,6 @@
 package com.example.controllers;
 
-import com.example.model.AdminUserAdderDTO;
-import com.example.model.AdminUserDTO;
-import com.example.model.AdminUserListingDTO;
-import com.example.model.TransactionDTO;
+import com.example.model.*;
 import com.example.service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +49,28 @@ public class AdminController{
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AdminUserDTO adminUserDTO = adminService.updateUser(incomingUser);
         return new ResponseEntity<>(adminUserDTO, HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value="/role", method = RequestMethod.GET)
+    public ResponseEntity<RoleListingDTO> getRoles(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        RoleListingDTO roleListingDTO = adminService.getRoles();
+        return new ResponseEntity<>(roleListingDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/role", method = RequestMethod.POST)
+    public ResponseEntity<RoleDTO> addRole(@RequestParam String role){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        RoleDTO roleDTO = adminService.addRole(role);
+        return new ResponseEntity<>(roleDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/role/update", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<RoleDTO> updateRole(@RequestParam RoleDTO incomingRole){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        RoleDTO roleDTO = adminService.updateRole(incomingRole);
+        return new ResponseEntity<>(roleDTO, HttpStatus.OK);
     }
 
     @RequestMapping(value="/transaction" , method = RequestMethod.PUT, consumes = {"application/json"})
