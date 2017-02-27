@@ -1,7 +1,6 @@
 package com.example.service.impl;
 
 import com.example.model.TransactionDTO;
-import com.example.model.TransactionIdentifierDTO;
 import com.example.model.TransactionListingDTO;
 import com.example.service.TransactionService;
 import org.slf4j.Logger;
@@ -24,11 +23,11 @@ public class TransactionServiceImpl implements TransactionService{
     private static final Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
     @Override
-    public TransactionListingDTO getTransactions(Long userId, Long startPosition, Long endPosition, String username, String password) {
+    public TransactionListingDTO getTransactions(Long userId, Long startPosition, Long endPosition) {
         TransactionListingDTO transactionListingDTO;
 
         try {
-            String url = "http://localhost:8092/transaction/list/{id}?startPosition="+startPosition+"&endPosition="+endPosition+"&username="+username+"&password="+password;
+            String url = "http://localhost:8092/transaction/list/{id}?startPosition="+startPosition+"&endPosition="+endPosition;
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", userId.toString());
 
@@ -40,11 +39,11 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public TransactionDTO getTransaction(Long transactionId, String username, String password) {
+    public TransactionDTO getTransaction(Long transactionId) {
         TransactionDTO transactionDTO;
 
         try {
-            String url = "http://localhost:8092/transaction/{id}?username="+username+"&password="+password;
+            String url = "http://localhost:8092/transaction/{id}";
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", transactionId.toString());
 
@@ -56,7 +55,7 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public TransactionDTO addTransaction(TransactionIdentifierDTO transactionIdentifierDTO) {
+    public TransactionDTO addTransaction(TransactionDTO transactionIdentifierDTO){
         TransactionDTO transactionDTO;
 
         try {
@@ -70,7 +69,7 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public TransactionDTO updateTransaction(TransactionIdentifierDTO transactionIdentifierDTO) {
+    public TransactionDTO updateTransaction(TransactionDTO transactionIdentifierDTO) {
 
         try {
             String url = "http://localhost:8092/transaction/admin/update";
@@ -84,10 +83,9 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public TransactionDTO deleteTransactionById(Long id, String username, String password) {
-
+    public TransactionDTO deleteTransactionById(Long id){
         try {
-            String url = "http://localhost:8092/transaction/admin/{id}?username=" + username + "&password=" + password;
+            String url = "http://localhost:8092/transaction/admin/{id}";
 
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", id.toString());
@@ -98,5 +96,4 @@ public class TransactionServiceImpl implements TransactionService{
 
         return new TransactionDTO();
     }
-
 }

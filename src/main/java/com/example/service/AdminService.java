@@ -1,12 +1,19 @@
 package com.example.service;
 
+import com.example.model.AdminUserAdderDTO;
+import com.example.model.AdminUserDTO;
+import com.example.model.AdminUserListingDTO;
 import com.example.model.TransactionDTO;
-import com.example.model.TransactionIdentifierDTO;
 
 /**
  * Created by dani on 2017-02-12.
  */
 public interface AdminService {
-    TransactionDTO updateTransaction(TransactionIdentifierDTO transactionIdentifierDTO);
-    TransactionDTO deleteTransactionById(Long id, String username, String password);
+    TransactionDTO updateTransaction(TransactionDTO transactionIdentifierDTO);
+    TransactionDTO deleteTransactionById(Long id);
+
+    AdminUserListingDTO getUsers(Long startPosition, Long endPosition);
+    AdminUserDTO registerUser(AdminUserAdderDTO incomingUser);
+    AdminUserDTO accountActivation(Long id, boolean enable);
+    AdminUserDTO updateUser(AdminUserDTO incomingUser);
 }

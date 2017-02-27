@@ -1,17 +1,39 @@
 package com.example;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Created by dani on 2017-02-22.
  */
 @EnableWebSecurity
 public class Security {
+
+    @Autowired
+    @Qualifier("userDetailsService")
+    UserDetailsService userDetailsService;
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder;
+    }
 
     @Configuration
     @Order(1)
@@ -24,8 +46,8 @@ public class Security {
                     .antMatchers("/user/**").permitAll()
                     .antMatchers("/ad/**").permitAll()
                     .antMatchers("/photo/**").permitAll()
-                    .antMatchers("/admin/**").permitAll()
-                    .antMatchers("/transaction/**").permitAll();
+                    .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
+                    .antMatchers("/transaction/**").access("hasRole('ROLE_AUCTIONEER')");
         }
     }
 }

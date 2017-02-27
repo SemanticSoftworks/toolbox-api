@@ -1,7 +1,6 @@
 package com.example.service;
 
 import com.example.model.TransactionDTO;
-import com.example.model.TransactionIdentifierDTO;
 import com.example.model.TransactionListingDTO;
 
 /**
@@ -9,9 +8,9 @@ import com.example.model.TransactionListingDTO;
  */
 public interface TransactionService {
 
-    TransactionListingDTO getTransactions(Long userId, Long startPosition, Long endPosition, String username, String password);
-    TransactionDTO getTransaction(Long transactionId, String username, String password);
-    TransactionDTO addTransaction(TransactionIdentifierDTO transactionIdentifierDTO);
-    TransactionDTO updateTransaction(TransactionIdentifierDTO transactionIdentifierDTO);
-    TransactionDTO deleteTransactionById(Long id, String username, String password);
+    TransactionListingDTO getTransactions(Long userId, Long startPosition, Long endPosition);
+    TransactionDTO getTransaction(Long transactionId);
+    TransactionDTO addTransaction(TransactionDTO transactionDTO);
+    TransactionDTO updateTransaction(TransactionDTO transactionIdentifierDTO);
+    TransactionDTO deleteTransactionById(Long id);
 }

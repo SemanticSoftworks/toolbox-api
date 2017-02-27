@@ -1,9 +1,6 @@
 package com.example.service.impl;
 
-import com.example.model.UserAuthenticationDTO;
-import com.example.model.UserDTO;
-import com.example.model.UserRegistrationDTO;
-import com.example.model.UserUpdateDTO;
+import com.example.model.*;
 import com.example.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,5 +88,80 @@ public class UserServiceImpl implements UserService {
         } catch(HttpClientErrorException e ){ logger.info("CATCH bad request change password!"); return null; }
 
         return userUpdateDTO;
+    }
+
+    @Override
+    public AdminUserDTO getUserByUsername(String username) {
+        AdminUserDTO adminUserDTO;
+
+        try {
+            String url = "http://localhost:8091/user/username?username="+username;
+            Map<String, String> params = new HashMap<String, String>();
+
+            RestTemplate restTemplate = new RestTemplate();
+            adminUserDTO = restTemplate.getForObject(url, AdminUserDTO.class, params);
+        }catch(HttpClientErrorException e ){ logger.info("CATCH bad request user by username!"); return null; }
+
+        return adminUserDTO;
+    }
+
+
+    // ADMIN stuff
+    @Override
+    public AdminUserListingDTO getAdminUsers(Long startPosition, Long endPosition) {
+        AdminUserListingDTO adminUserListingDTO;
+
+        try {
+            String url = "http://localhost:8091/user/admin?startPosition="+startPosition+"&endPosition="+endPosition;
+            Map<String, String> params = new HashMap<String, String>();
+
+            RestTemplate restTemplate = new RestTemplate();
+            adminUserListingDTO = restTemplate.getForObject(url, AdminUserListingDTO.class, params);
+        }catch(HttpClientErrorException e ){ logger.info("CATCH bad request getAdminU SERS!"); return null; }
+
+        return adminUserListingDTO;
+    }
+
+    @Override
+    public AdminUserDTO registerAdminUser(AdminUserAdderDTO incomingUser) {
+       AdminUserDTO adminUserDTO;
+
+        try {
+            String url = "http://localhost:8091/user/admin";
+
+            RestTemplate restTemplate = new RestTemplate();
+            adminUserDTO = restTemplate.postForObject(url, incomingUser ,AdminUserDTO.class);
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request change password!"); return null; }
+
+        return adminUserDTO;
+    }
+
+    @Override
+    public AdminUserDTO adminAccountActivation(Long id, boolean enable) {
+
+        try {
+            String url = "http://localhost:8091/user/admin/accountActivation/{id}?enable="+enable;
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("id", id.toString());
+
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.put(url,"",params);
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request updateTransaction!"); return null; }
+
+        return new AdminUserDTO();
+    }
+
+    @Override
+    public AdminUserDTO adminUpdateUser(AdminUserDTO incomingUser) {
+        AdminUserDTO adminUserDTO;
+
+        try {
+            String url = "http://localhost:8091/user/admin/update";
+
+            RestTemplate restTemplate = new RestTemplate();
+            adminUserDTO = restTemplate.postForObject(url, incomingUser ,AdminUserDTO.class);
+        } catch(HttpClientErrorException e ){ logger.info("CATCH bad request change password!"); return null; }
+
+        return adminUserDTO;
     }
 }

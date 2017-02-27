@@ -1,13 +1,17 @@
 package com.example.controllers;
 
+import com.example.model.AdminUserAdderDTO;
+import com.example.model.AdminUserDTO;
+import com.example.model.AdminUserListingDTO;
 import com.example.model.TransactionDTO;
-import com.example.model.TransactionIdentifierDTO;
 import com.example.service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -22,9 +26,37 @@ public class AdminController{
     private AdminService adminService;
 
 
-    // admin features
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public ResponseEntity<AdminUserListingDTO> getUsers(@RequestParam Long startPosition, @RequestParam Long endPosition){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AdminUserListingDTO adminUserListingDTO = adminService.getUsers(startPosition, endPosition);
+        return new ResponseEntity<>(adminUserListingDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/user/register", method = RequestMethod.POST, consumes={"application/json"})
+    public ResponseEntity<AdminUserDTO> registerAdminUser(@RequestBody AdminUserAdderDTO incomingUser){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AdminUserDTO adminUserDTO = adminService.registerUser(incomingUser);
+        return new ResponseEntity<>(adminUserDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/user/accountActivation/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<AdminUserDTO> accountActivation(@PathVariable Long id , @RequestParam Boolean enable){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AdminUserDTO adminUserDTO = adminService.accountActivation(id, enable);
+        return new ResponseEntity<>(adminUserDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/user/update" , method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<AdminUserDTO> updateUser(@RequestBody AdminUserDTO incomingUser){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AdminUserDTO adminUserDTO = adminService.updateUser(incomingUser);
+        return new ResponseEntity<>(adminUserDTO, HttpStatus.OK);
+    }
+
     @RequestMapping(value="/transaction" , method = RequestMethod.PUT, consumes = {"application/json"})
-    public ResponseEntity<TransactionDTO> updateTransaction(@RequestBody TransactionIdentifierDTO incomingTransaction){
+    public ResponseEntity<TransactionDTO> updateTransaction(@RequestBody TransactionDTO incomingTransaction){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         TransactionDTO transactionDTO = adminService.updateTransaction(incomingTransaction);
 
         if(transactionDTO != null){
@@ -38,8 +70,10 @@ public class AdminController{
     }
 
     @RequestMapping(value="/transaction/{id}" , method = RequestMethod.DELETE)
-    public ResponseEntity<TransactionDTO> deleteTransaction(@PathVariable Long id,@RequestParam String username, @RequestParam String password){
-        TransactionDTO transactionDTO = adminService.deleteTransactionById(id, username, password);
+    public ResponseEntity<TransactionDTO> deleteTransaction(@PathVariable Long id){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        TransactionDTO transactionDTO = adminService.deleteTransactionById(id);
+
         if(transactionDTO != null){
             return new ResponseEntity<>(transactionDTO, HttpStatus.OK);
         }
