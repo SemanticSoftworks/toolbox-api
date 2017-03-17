@@ -21,13 +21,15 @@ import java.util.Map;
 public class TransactionServiceImpl implements TransactionService{
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
-
+    private static final String PORT = "8092";
+    private static final String HOST = "http://192.168.99.100:" + PORT;
+    
     @Override
     public TransactionListingDTO getTransactions(Long userId, Long startPosition, Long endPosition) {
         TransactionListingDTO transactionListingDTO;
 
         try {
-            String url = "http://localhost:8092/transaction/list/{id}?startPosition="+startPosition+"&endPosition="+endPosition;
+            String url = HOST + "/transaction/list/{id}?startPosition="+startPosition+"&endPosition="+endPosition;
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", userId.toString());
 
@@ -43,7 +45,7 @@ public class TransactionServiceImpl implements TransactionService{
         TransactionDTO transactionDTO;
 
         try {
-            String url = "http://localhost:8092/transaction/{id}";
+            String url = HOST + "/transaction/{id}";
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", transactionId.toString());
 
@@ -59,7 +61,7 @@ public class TransactionServiceImpl implements TransactionService{
         TransactionDTO transactionDTO;
 
         try {
-            String url = "http://localhost:8092/transaction/";
+            String url = HOST + "/transaction/";
             RestTemplate restTemplate = new RestTemplate();
 
             transactionDTO = (restTemplate.postForObject(url, transactionIdentifierDTO, TransactionDTO.class));
@@ -72,7 +74,7 @@ public class TransactionServiceImpl implements TransactionService{
     public TransactionDTO updateTransaction(TransactionDTO transactionIdentifierDTO) {
 
         try {
-            String url = "http://localhost:8092/transaction/admin/update";
+            String url = HOST + "/transaction/admin/update";
             Map<String, String> params = new HashMap<String, String>();
             RestTemplate restTemplate = new RestTemplate();
 
@@ -85,7 +87,7 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public TransactionDTO deleteTransactionById(Long id){
         try {
-            String url = "http://localhost:8092/transaction/admin/{id}";
+            String url = HOST + "/transaction/admin/{id}";
 
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", id.toString());

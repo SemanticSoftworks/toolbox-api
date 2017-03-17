@@ -20,10 +20,12 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final String PORT = "8091";
+    private static final String HOST = "http://192.168.99.100:" + PORT;
 
     @Override
     public UserDTO getUser(Long id) {
-        String url = "http://localhost:8091/user/{id}";
+        String url = HOST + "/user/{id}";
         Map<String, String> params = new HashMap<String, String>();
         params.put("id", id.toString());
 
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = null;
 
         try {
-            String url = "http://localhost:8091/user/login";
+            String url = HOST + "/user/login";
             RestTemplate restTemplate = new RestTemplate();
 
             userDTO = (restTemplate.postForObject(url, userAuthenticationDTO, UserDTO.class));
@@ -51,7 +53,7 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = null;
 
         try {
-            String url = "http://localhost:8091/user/register";
+            String url = HOST + "/user/register";
             RestTemplate restTemplate = new RestTemplate();
 
             userDTO = (restTemplate.postForObject(url, userRegistrationDTO, UserDTO.class));
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = null;
 
         try {
-            String url = "http://localhost:8091/user/update";
+            String url = HOST + "/user/update";
             RestTemplate restTemplate = new RestTemplate();
 
             userDTO = (restTemplate.postForObject(url, userRegistrationDTO, UserDTO.class));
@@ -81,7 +83,7 @@ public class UserServiceImpl implements UserService {
         UserUpdateDTO userUpdateDTO=null;
 
         try {
-            String url = "http://localhost:8091/user/forgotpassword?"+"username="+username+"&"+"email="+email+"&"+"newPassword="+newPassword;
+            String url = HOST + "/user/forgotpassword?"+"username="+username+"&"+"email="+email+"&"+"newPassword="+newPassword;
 
             RestTemplate restTemplate = new RestTemplate();
             userUpdateDTO = restTemplate.postForObject(url, new UserUpdateDTO() ,UserUpdateDTO.class);
@@ -95,7 +97,7 @@ public class UserServiceImpl implements UserService {
         AdminUserDTO adminUserDTO;
 
         try {
-            String url = "http://localhost:8091/user/username?username="+username;
+            String url = HOST + "/user/username?username="+username;
             Map<String, String> params = new HashMap<String, String>();
 
             RestTemplate restTemplate = new RestTemplate();
@@ -112,12 +114,17 @@ public class UserServiceImpl implements UserService {
         AdminUserListingDTO adminUserListingDTO;
 
         try {
-            String url = "http://localhost:8091/user/admin?startPosition="+startPosition+"&endPosition="+endPosition;
+            String url = HOST + "/user/admin?startPosition=" + startPosition + "&endPosition=" + endPosition;
             Map<String, String> params = new HashMap<String, String>();
+            params.put("startPosition", startPosition.toString());
+            params.put("endPosition", endPosition.toString());
 
             RestTemplate restTemplate = new RestTemplate();
-            adminUserListingDTO = restTemplate.getForObject(url, AdminUserListingDTO.class, params);
-        }catch(HttpClientErrorException e ){ logger.info("CATCH bad request getAdminU SERS!"); return null; }
+            adminUserListingDTO = restTemplate.getForObject(url, AdminUserListingDTO.class);
+        } catch (HttpClientErrorException e) {
+            logger.info("CATCH bad request getAdminU SERS!");
+            return null;
+        }
 
         return adminUserListingDTO;
     }
@@ -127,7 +134,7 @@ public class UserServiceImpl implements UserService {
        AdminUserDTO adminUserDTO;
 
         try {
-            String url = "http://localhost:8091/user/admin";
+            String url = HOST + "/user/admin";
 
             RestTemplate restTemplate = new RestTemplate();
             adminUserDTO = restTemplate.postForObject(url, incomingUser ,AdminUserDTO.class);
@@ -140,7 +147,7 @@ public class UserServiceImpl implements UserService {
     public AdminUserDTO adminAccountActivation(Long id, boolean enable) {
 
         try {
-            String url = "http://localhost:8091/user/admin/accountActivation/{id}?enable="+enable;
+            String url = HOST + "/user/admin/accountActivation/{id}?enable="+enable;
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", id.toString());
 
@@ -156,7 +163,7 @@ public class UserServiceImpl implements UserService {
         AdminUserDTO adminUserDTO;
 
         try {
-            String url = "http://localhost:8091/user/admin/update";
+            String url = HOST + "/user/admin/update";
 
             RestTemplate restTemplate = new RestTemplate();
             adminUserDTO = restTemplate.postForObject(url, incomingUser ,AdminUserDTO.class);
@@ -171,7 +178,7 @@ public class UserServiceImpl implements UserService {
         RoleListingDTO roleListingDTO;
 
         try {
-            String url = "http://localhost:8091/user/admin/role";
+            String url = HOST + "/user/admin/role";
             Map<String, String> params = new HashMap<String, String>();
 
             RestTemplate restTemplate = new RestTemplate();
@@ -185,7 +192,7 @@ public class UserServiceImpl implements UserService {
         RoleDTO roleDTO;
 
         try {
-            String url = "http://localhost:8091/user/admin/role?role="+role;
+            String url = HOST + "/user/admin/role?role="+role;
 
             RestTemplate restTemplate = new RestTemplate();
             roleDTO = restTemplate.postForObject(url, new RoleDTO(),RoleDTO.class);
@@ -197,7 +204,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public RoleDTO updateRole(RoleDTO incomingRole) {
         try {
-            String url = "http://localhost:8091/user/admin/role";
+            String url = HOST + "/user/admin/role";
             Map<String, String> params = new HashMap<String, String>();
             RestTemplate restTemplate = new RestTemplate();
 
